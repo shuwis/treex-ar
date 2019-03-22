@@ -54,13 +54,14 @@ resizeHandler();
 
 	function resizeHandler () {
 		if (window.innerWidth > window.innerHeight) {
+			document.getElementById("warning-message").setAttribute("style", "display:none;")
 			initialize();
 			animate();
 		} else {
 			document.getElementById("warning-message").setAttribute("style", "display:block;")
 		}
 	}
-	
+
 	function initialize()
 	{
 		scene = new THREE.Scene();
