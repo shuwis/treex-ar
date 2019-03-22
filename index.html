@@ -46,9 +46,11 @@ var markerRoot1;
 
 var mesh1;
 
-let isLandscape = window.innerWidth > window.innerHeight;
+// let isLandscape = window.innerWidth > window.innerHeight;
 
-if (isLandscape) {
+// if (isLandscape) {
+window.onresize = function(event) {
+	if (window.innerWidth > window.innerHeight) {
 	initialize();
 	animate();
 
@@ -176,10 +178,10 @@ if (isLandscape) {
 		update();
 		render();
 	}
-} else {
-	document.getElementById("warning-message").setAttribute("style", "display:block;")
+	} else {
+		document.getElementById("warning-message").setAttribute("style", "display:block;")
+	}
 }
-
 </script>
 
 
