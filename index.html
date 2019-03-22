@@ -48,12 +48,19 @@ var mesh1;
 
 // let isLandscape = window.innerWidth > window.innerHeight;
 
-// if (isLandscape) {
-window.onresize = function(event) {
-	if (window.innerWidth > window.innerHeight) {
-	initialize();
-	animate();
+// if (isLandscape) {}
 
+resizeHandler();
+
+	function resizeHandler () {
+		if (window.innerWidth > window.innerHeight) {
+			initialize();
+			animate();
+		} else {
+			document.getElementById("warning-message").setAttribute("style", "display:block;")
+		}
+	}
+	
 	function initialize()
 	{
 		scene = new THREE.Scene();
@@ -178,10 +185,11 @@ window.onresize = function(event) {
 		update();
 		render();
 	}
-	} else {
-		document.getElementById("warning-message").setAttribute("style", "display:block;")
+
+	window.onresize = function(event) {
+		resizeHandler();
 	}
-}
+
 </script>
 
 
