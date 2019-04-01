@@ -12,28 +12,29 @@
 	<script src="js/threex-artoolkitcontext.js"></script>
 	<script src="js/threex-arbasecontrols.js"></script>
 	<script src="js/threex-armarkercontrols.js"></script>
-	<!-- <style type="text/css">
-		#warning-message { display: none; }
-		@media only screen and (orientation:portrait){
-			#video { display:none; }
-			#warning-message { display:block; }
+	<style type="text/css">
+		#warning-message { 
+			text-align: center;
+			line-height: 50;
+			vertical-align: middle;
 		}
-		@media only screen and (orientation:landscape){
-			#warning-message { display:none; }
+		#warning-message p{
+			font-size: large;
 		}
-	</style> -->
+	</style>
 </head>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
 
 <!-- <video id="video" autoplay loop crossOrigin="anonymous" webkit-playsinline style="display:none"> -->
-<video id="video" loop crossOrigin="anonymous" webkit-playsinline style="display:none">
+<video id="video" loop crossOrigin="anonymous" webkit-playsinline style="display:none;">
 	<!-- <source src="video/sintel.ogv" type='video/ogg; codecs="theora, vorbis"'> -->
 	<source src="video/sintel.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
 </video>
+<img id="tapImg" src="data/tap.png" style="display:none">
 
-<div id="warning-message" style="display:none">
-    this website is only viewable in landscape mode
+<div id="warning-message" style="display:none;">
+    <p>this website is only viewable in landscape mode</p>
 </div>
 
 <script>
@@ -50,17 +51,77 @@ var mesh1;
 
 // if (isLandscape) {}
 
-resizeHandler();
+// resizeHandler();
 
-	function resizeHandler () {
+initialize();
+animate();
+
+	function resizeHandler ()
+	{
+		let videoTag = document.getElementsByTagName("video");
+		let videoTagIndex = videoTag.length - 1;
+		let videoTagStyle = videoTag[videoTagIndex].getAttribute("style");
+		let canvas = document.getElementsByTagName("canvas");
+
+		let vidObj3d = scene.getObjectById(10);
+		let tapObj3d = scene.getObjectById(11);
+
 		if (window.innerWidth > window.innerHeight) {
-			document.getElementById("warning-message").setAttribute("style", "display:none;")
-			initialize();
-			animate();
+			document.getElementById("warning-message").style.display = "none";
+
+			vidObj3d.visible = true;
+			tapObj3d.visible = true;
+			videoTag[videoTagIndex].style.display = 'block';
+			
+
+			canvas[0].style.display = 'block';
+			// document.getElementById( 'video' ).play();
 		} else {
-			document.getElementById("warning-message").setAttribute("style", "display:block;")
+			document.getElementById("warning-message").style.display = "block";
+
+			vidObj3d.visible = false;
+			videoTag[videoTagIndex].style.display = 'none';
+			
+			canvas[0].style.display = 'none';
+			document.getElementById( 'video' ).pause();
 		}
 	}
+	function isLandscape() {
+		let videoTag = document.getElementsByTagName("video");
+		let videoTagIndex = videoTag.length - 1;
+
+		let errMess = document.getElementById("warning-message");
+		errMess.style.width = window.innerWidth + 'px';
+		errMess.style.height = window.innerHeight + 'px';
+
+		if (window.innerWidth > window.innerHeight) {
+			errMess.style.display = 'none';
+			// videoTag[videoTagIndex].setAttribute("style", "display:block;");
+			document.getElementsByTagName("canvas")[0].style.display = 'block';
+		} else {
+			errMess.style.display = 'block';;
+			// videoTag[videoTagIndex].setAttribute("style", "display:none;");
+			document.getElementsByTagName("canvas")[0].style.display = 'none';
+		}
+	}
+
+	// document.body.addEventListener('click', function(){
+	// 	let video = document.getElementById('video');
+	// 	// let tapImg = document.getElementById('tapImg');
+	// 	let obj3d = THREE.getObjectById(2);
+	// 	console.log(obj3d);
+	// 	if(video.paused)
+	// 	{
+	// 		// tapImg.style.display = 'none';
+	// 		video.play();
+	// 	} else {
+	// 		// tapImg.style.display = 'block';
+	// 		video.pause();
+	// 	}
+	// })
+	// window.onchange = function(event) {
+	// 	resizeHandler();
+	// }
 
 	function initialize()
 	{
@@ -143,13 +204,16 @@ resizeHandler();
 			type: 'pattern', patternUrl: "data/hiro.patt",
 		})
 
+
+
+
 		let geometry1 = new THREE.PlaneBufferGeometry(2,2, 4,4);
 
 		let video = document.getElementById( 'video' );
 		//setAttribute autoplay
-		video.setAttribute( 'autoplay', '');
-		//video.load();
-		//video.play();
+		// video.setAttribute( 'autoplay', '');
+		// video.load();
+		// video.play();
 		
 		let texture = new THREE.VideoTexture( video );
 		texture.minFilter = THREE.LinearFilter;
@@ -161,6 +225,58 @@ resizeHandler();
 		mesh1.rotation.x = -Math.PI/2;
 		
 		markerRoot1.add( mesh1 );
+
+
+		let geometry2 = new THREE.PlaneBufferGeometry(1,1, 4,4);
+		let tapImg = document.getElementById( 'tapImg' );
+		let loader = new THREE.TextureLoader();
+		let texture2 = loader.load( tapImg.src );
+		// texture2.anisotropy = 0;
+		texture2.magFilter = THREE.LinearFilter;
+		texture2.minFilter = THREE.LinearFilter;
+		let material2 = new THREE.MeshBasicMaterial( { map: texture2, transparent: true, side: THREE.DoubleSide, depthWrite: false} );
+		
+		mesh2 = new THREE.Mesh( geometry2, material2 );
+		mesh2.rotation.x = -Math.PI/2;
+		mesh2.position.set(0,0.1,0);
+
+		markerRoot1.add( mesh2 );
+
+		document.body.addEventListener('click', function(){
+			let video = document.getElementById('video');
+			let tapObj3d = scene.getObjectById(11);
+
+			if(video.paused)
+			{
+				tapObj3d.traverse ( function (child) {
+					if (child instanceof THREE.Mesh) {
+						child.visible = false;
+					}
+				});
+				video.play();
+			} else {
+				tapObj3d.traverse ( function (child) {
+					if (child instanceof THREE.Mesh) {
+						child.visible = true;
+					}
+				});
+				video.pause();
+			}
+		})
+
+		window.onresize = function(event) {
+			resizeHandler();
+		}
+
+		// markerControls1.addEventListener('markerFound', function(event){
+		// 	// console.log(event);
+
+		// })
+		document.onchange = function(event) {
+			console.log(markerRoot1.visible);
+		}
+
+		isLandscape();
 	}
 
 
@@ -187,12 +303,8 @@ resizeHandler();
 		render();
 	}
 
-	window.onresize = function(event) {
-		resizeHandler();
-	}
 
 </script>
-
 
 </body>
 </html>

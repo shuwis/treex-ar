@@ -69,7 +69,11 @@ ARjs.Source.prototype.init = function(onReady, onError){
         this.domElement.style.position = 'absolute'
         this.domElement.style.top = '0px'
         this.domElement.style.left = '0px'
-        this.domElement.style.zIndex = '-2'
+		this.domElement.style.zIndex = '-2'
+		//shuhr. добавляем отключение в портретном режиме.
+		if (window.innerWidth < window.innerHeight) {
+			this.domElement.style.display = "none";
+		}
 
 	return this
         function onSourceReady(){
@@ -160,6 +164,7 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
 	domElement.setAttribute('autoplay', '');
 	domElement.setAttribute('muted', '');
 	domElement.setAttribute('playsinline', '');
+	// domElement.setAttribute('display', 'none');	//добавил скрытие для портретного экрана
 	domElement.style.width = this.parameters.displayWidth+'px'
 	domElement.style.height = this.parameters.displayHeight+'px'
 
