@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Hello, world!</title>
+	<title>Приглашаем на свадьбу Артема и Нигоры</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<!-- include jsartookit -->
@@ -15,11 +15,12 @@
 	<style type="text/css">
 		#warning-message { 
 			text-align: center;
-			line-height: 50;
+			/* line-height: 50; */
 			vertical-align: middle;
 		}
 		#warning-message p{
 			font-size: large;
+			margin-top: 50%;
 		}
 	</style>
 </head>
@@ -34,7 +35,8 @@
 <img id="tapImg" src="data/tap.png" style="display:none">
 
 <div id="warning-message" style="display:none;">
-    <p>this website is only viewable in landscape mode</p>
+	<p>Для полноценного эффекта включите автоповорот экрана и поверните телефон в альбомный режим.<br>
+	Ваши Артем и Нигора</p>
 </div>
 
 <script>
@@ -185,7 +187,8 @@ animate();
 		// create atToolkitContext
 		arToolkitContext = new THREEx.ArToolkitContext({
 			cameraParametersUrl: 'data/camera_para.dat',
-			detectionMode: 'mono'
+			detectionMode: 'mono',
+			patternRatio: 0.9
 		});
 		
 		// copy projection matrix to camera when initialization complete
@@ -202,12 +205,13 @@ animate();
 		scene.add(markerRoot1);
 		let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
 			type: 'pattern', patternUrl: "data/hiro.patt",
+			// type: 'pattern', patternUrl: 'data/pattern-marker2.patt',
 		})
 
 
 
 
-		let geometry1 = new THREE.PlaneBufferGeometry(2,2, 4,4);
+		let geometry1 = new THREE.PlaneBufferGeometry(1,1, 4,4);
 
 		let video = document.getElementById( 'video' );
 		//setAttribute autoplay
@@ -245,35 +249,30 @@ animate();
 		document.body.addEventListener('click', function(){
 			let video = document.getElementById('video');
 			let tapObj3d = scene.getObjectById(11);
+			let vidObj3d = scene.getObjectById(10);
 
-			if(video.paused)
-			{
-				tapObj3d.traverse ( function (child) {
-					if (child instanceof THREE.Mesh) {
-						child.visible = false;
-					}
-				});
-				video.play();
-			} else {
-				tapObj3d.traverse ( function (child) {
-					if (child instanceof THREE.Mesh) {
-						child.visible = true;
-					}
-				});
-				video.pause();
+			if(vidObj3d.visible && markerRoot1.visible){
+				if(video.paused)
+				{
+					tapObj3d.traverse ( function (child) {
+						if (child instanceof THREE.Mesh) {
+							child.visible = false;
+						}
+					});
+					video.play();
+				} else {
+					tapObj3d.traverse ( function (child) {
+						if (child instanceof THREE.Mesh) {
+							child.visible = true;
+						}
+					});
+					video.pause();
+				}
 			}
 		})
 
 		window.onresize = function(event) {
 			resizeHandler();
-		}
-
-		// markerControls1.addEventListener('markerFound', function(event){
-		// 	// console.log(event);
-
-		// })
-		document.onchange = function(event) {
-			console.log(markerRoot1.visible);
 		}
 
 		isLandscape();
@@ -284,7 +283,19 @@ animate();
 	{
 		// update artoolkit on every frame
 		if ( arToolkitSource.ready !== false )
+		{
 			arToolkitContext.update( arToolkitSource.domElement );
+		}
+		let video = document.getElementById('video');
+		if (!markerRoot1.visible)
+		{
+			video.pause();
+		} else {
+			if (video.paused){
+				let tapObj3d = scene.getObjectById(11);
+				tapObj3d.visible = true;
+			}
+		}
 	}
 
 
