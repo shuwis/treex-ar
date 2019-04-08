@@ -71,14 +71,14 @@
 
 		let vidObj3d = scene.getObjectById(10);
 		// let tapObj3d = scene.getObjectById(11);
-		let tapText = document.getElementById('play-message');
+		// let tapText = document.getElementById('play-message');
 
 		if (window.innerWidth > window.innerHeight) {
 			document.getElementById("warning-message").style.display = "none";
 
 			vidObj3d.visible = true;
 			// tapObj3d.visible = true;
-			tapText.style.display = 'block';
+			// tapText.style.display = 'block';
 			videoTag[videoTagIndex].style.display = 'block';
 
 			canvas[0].style.display = 'block';
@@ -88,7 +88,7 @@
 
 			vidObj3d.visible = false;
 			videoTag[videoTagIndex].style.display = 'none';
-			tapText.style.display = 'none';
+			// tapText.style.display = 'none';
 			
 			canvas[0].style.display = 'none';
 			document.getElementById( 'video' ).pause();
@@ -295,13 +295,15 @@
 		{
 			arToolkitContext.update( arToolkitSource.domElement );
 		}
+
 		let video = document.getElementById('video');
+		let tapText = document.getElementById('play-message');
 		if (!markerRoot1.visible)
 		{
 			video.pause();
+			tapText.style.display = 'none';
 		} else {
 			if (video.paused){
-				let tapText = document.getElementById('play-message');
 				tapText.style.display = 'block';
 				// let tapObj3d = scene.getObjectById(11);
 				// tapObj3d.visible = true;
