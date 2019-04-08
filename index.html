@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Приглашаем на свадьбу Артема и Нигоры</title>
+	<title>Приглашение на свадьбу Артема и Нигоры</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<!-- include jsartookit -->
@@ -22,6 +22,15 @@
 			font-size: large;
 			margin-top: 50%;
 		}
+		#play-message { 
+			text-align: center;
+			/* vertical-align: middle; */
+		}
+		#play-message p{
+			font-size: xx-large;
+			color: greenyellow;
+			/* margin-top: 50%; */
+		}
 	</style>
 </head>
 
@@ -39,24 +48,19 @@
 	Ваши Артем и Нигора</p>
 </div>
 
+<div id="play-message" style="display:none;">
+	<p>Нажми на экран, произойдет волшебство ;)</p>
+</div>
+
 <script>
 
-var scene, camera, renderer, clock, deltaTime, totalTime;
+	var scene, camera, renderer, clock, deltaTime, totalTime;
+	var arToolkitSource, arToolkitContext;
+	var markerRoot1;
+	var mesh1;
 
-var arToolkitSource, arToolkitContext;
-
-var markerRoot1;
-
-var mesh1;
-
-// let isLandscape = window.innerWidth > window.innerHeight;
-
-// if (isLandscape) {}
-
-// resizeHandler();
-
-initialize();
-animate();
+	initialize();
+	animate();
 
 	function resizeHandler ()
 	{
@@ -66,15 +70,16 @@ animate();
 		let canvas = document.getElementsByTagName("canvas");
 
 		let vidObj3d = scene.getObjectById(10);
-		let tapObj3d = scene.getObjectById(11);
+		// let tapObj3d = scene.getObjectById(11);
+		let tapText = document.getElementById('play-message');
 
 		if (window.innerWidth > window.innerHeight) {
 			document.getElementById("warning-message").style.display = "none";
 
 			vidObj3d.visible = true;
-			tapObj3d.visible = true;
+			// tapObj3d.visible = true;
+			tapText.style.display = 'block';
 			videoTag[videoTagIndex].style.display = 'block';
-			
 
 			canvas[0].style.display = 'block';
 			// document.getElementById( 'video' ).play();
@@ -83,14 +88,15 @@ animate();
 
 			vidObj3d.visible = false;
 			videoTag[videoTagIndex].style.display = 'none';
+			tapText.style.display = 'none';
 			
 			canvas[0].style.display = 'none';
 			document.getElementById( 'video' ).pause();
 		}
 	}
 	function isLandscape() {
-		let videoTag = document.getElementsByTagName("video");
-		let videoTagIndex = videoTag.length - 1;
+		// let videoTag = document.getElementsByTagName("video");
+		// let videoTagIndex = videoTag.length - 1;
 
 		let errMess = document.getElementById("warning-message");
 		errMess.style.width = window.innerWidth + 'px';
@@ -231,41 +237,44 @@ animate();
 		markerRoot1.add( mesh1 );
 
 
-		let geometry2 = new THREE.PlaneBufferGeometry(1,1, 4,4);
-		let tapImg = document.getElementById( 'tapImg' );
-		let loader = new THREE.TextureLoader();
-		let texture2 = loader.load( tapImg.src );
-		// texture2.anisotropy = 0;
-		texture2.magFilter = THREE.LinearFilter;
-		texture2.minFilter = THREE.LinearFilter;
-		let material2 = new THREE.MeshBasicMaterial( { map: texture2, transparent: true, side: THREE.DoubleSide, depthWrite: false} );
+		// let geometry2 = new THREE.PlaneBufferGeometry(1,1, 4,4);
+		// let tapImg = document.getElementById( 'tapImg' );
+		// let loader = new THREE.TextureLoader();
+		// let texture2 = loader.load( tapImg.src );
+		// // texture2.anisotropy = 0;
+		// texture2.magFilter = THREE.LinearFilter;
+		// texture2.minFilter = THREE.LinearFilter;
+		// let material2 = new THREE.MeshBasicMaterial( { map: texture2, transparent: true, side: THREE.DoubleSide, depthWrite: false} );
 		
-		mesh2 = new THREE.Mesh( geometry2, material2 );
-		mesh2.rotation.x = -Math.PI/2;
-		mesh2.position.set(0,0.1,0);
+		// mesh2 = new THREE.Mesh( geometry2, material2 );
+		// mesh2.rotation.x = -Math.PI/2;
+		// mesh2.position.set(0,0.1,0);
 
-		markerRoot1.add( mesh2 );
+		// markerRoot1.add( mesh2 );
 
 		document.body.addEventListener('click', function(){
 			let video = document.getElementById('video');
-			let tapObj3d = scene.getObjectById(11);
+			// let tapObj3d = scene.getObjectById(11);
+			let tapText = document.getElementById('play-message');
 			let vidObj3d = scene.getObjectById(10);
 
 			if(vidObj3d.visible && markerRoot1.visible){
 				if(video.paused)
 				{
-					tapObj3d.traverse ( function (child) {
-						if (child instanceof THREE.Mesh) {
-							child.visible = false;
-						}
-					});
+					// tapObj3d.traverse ( function (child) {
+					// 	if (child instanceof THREE.Mesh) {
+					// 		child.visible = false;
+					// 	}
+					// });
+					tapText.style.display = 'none';
 					video.play();
 				} else {
-					tapObj3d.traverse ( function (child) {
-						if (child instanceof THREE.Mesh) {
-							child.visible = true;
-						}
-					});
+					// tapObj3d.traverse ( function (child) {
+					// 	if (child instanceof THREE.Mesh) {
+					// 		child.visible = true;
+					// 	}
+					// });
+					tapText.style.display = 'block';
 					video.pause();
 				}
 			}
@@ -292,8 +301,10 @@ animate();
 			video.pause();
 		} else {
 			if (video.paused){
-				let tapObj3d = scene.getObjectById(11);
-				tapObj3d.visible = true;
+				let tapText = document.getElementById('play-message');
+				tapText.style.display = 'block';
+				// let tapObj3d = scene.getObjectById(11);
+				// tapObj3d.visible = true;
 			}
 		}
 	}
