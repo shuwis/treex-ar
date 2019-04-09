@@ -21,6 +21,7 @@
 		#warning-message p{
 			font-size: large;
 			margin-top: 50%;
+			background-color: white;
 		}
 		#play-message { 
 			text-align: center;
@@ -37,11 +38,11 @@
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
 
 <!-- <video id="video" autoplay loop crossOrigin="anonymous" webkit-playsinline style="display:none"> -->
-<video id="video" loop crossOrigin="anonymous" webkit-playsinline style="display:none;">
+<video id="video" loop crossOrigin="anonymous" webkit-playsinline style="display:none">
 	<!-- <source src="video/sintel.ogv" type='video/ogg; codecs="theora, vorbis"'> -->
 	<source src="video/sintel.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
 </video>
-<img id="tapImg" src="data/tap.png" style="display:none">
+<!-- <img id="tapImg" src="data/tap.png" style="display:none"> -->
 
 <div id="warning-message" style="display:none;">
 	<p>Для полноценного эффекта включите автоповорот экрана и поверните телефон в альбомный режим.<br>
@@ -58,43 +59,50 @@
 	var arToolkitSource, arToolkitContext;
 	var markerRoot1;
 	var mesh1;
+	let isLandscape;
 
 	initialize();
 	animate();
 
 	function resizeHandler ()
 	{
-		let videoTag = document.getElementsByTagName("video");
-		let videoTagIndex = videoTag.length - 1;
-		let videoTagStyle = videoTag[videoTagIndex].getAttribute("style");
+		// let videoTag = document.getElementsByTagName("video");
+		// let videoTagIndex = videoTag.length - 1;
+		// let videoTagStyle = videoTag[videoTagIndex].getAttribute("style");
 		let canvas = document.getElementsByTagName("canvas");
 
 		let vidObj3d = scene.getObjectById(10);
 		// let tapObj3d = scene.getObjectById(11);
 		// let tapText = document.getElementById('play-message');
 
-		if (window.innerWidth > window.innerHeight) {
-			document.getElementById("warning-message").style.display = "none";
+		let errMess = document.getElementById("warning-message");
+		errMess.style.width = window.innerWidth + 'px';
+		errMess.style.height = window.innerHeight + 'px';
 
-			vidObj3d.visible = true;
+		if (window.innerWidth > window.innerHeight) {
+			errMess.style.display = "none";
+
+			// vidObj3d.visible = true;
 			// tapObj3d.visible = true;
 			// tapText.style.display = 'block';
-			videoTag[videoTagIndex].style.display = 'block';
+			// videoTag[videoTagIndex].style.display = 'block';
 
 			canvas[0].style.display = 'block';
 			// document.getElementById( 'video' ).play();
+			isLandscape = true;
 		} else {
-			document.getElementById("warning-message").style.display = "block";
+			errMess.style.display = "block";
 
-			vidObj3d.visible = false;
-			videoTag[videoTagIndex].style.display = 'none';
+			// vidObj3d.visible = false;
+			// videoTag[videoTagIndex].style.display = 'none';
 			// tapText.style.display = 'none';
 			
 			canvas[0].style.display = 'none';
 			document.getElementById( 'video' ).pause();
+			isLandscape = false;
 		}
 	}
-	function isLandscape() {
+	function checkLandscape() {
 		// let videoTag = document.getElementsByTagName("video");
 		// let videoTagIndex = videoTag.length - 1;
 
@@ -106,10 +114,12 @@
 			errMess.style.display = 'none';
 			// videoTag[videoTagIndex].setAttribute("style", "display:block;");
 			document.getElementsByTagName("canvas")[0].style.display = 'block';
+			isLandscape = true;
 		} else {
 			errMess.style.display = 'block';;
 			// videoTag[videoTagIndex].setAttribute("style", "display:none;");
 			document.getElementsByTagName("canvas")[0].style.display = 'none';
+			isLandscape = false;
 		}
 	}
 
@@ -183,7 +193,8 @@
 		
 		// handle resize event
 		window.addEventListener('resize', function(){
-			onResize()
+			onResize();
+			resizeHandler();
 		});
 		
 		////////////////////////////////////////////////////////////
@@ -258,7 +269,7 @@
 			let tapText = document.getElementById('play-message');
 			let vidObj3d = scene.getObjectById(10);
 
-			if(vidObj3d.visible && markerRoot1.visible){
+			if(vidObj3d.visible && markerRoot1.visible && isLandscape){
 				if(video.paused)
 				{
 					// tapObj3d.traverse ( function (child) {
@@ -280,11 +291,13 @@
 			}
 		})
 
-		window.onresize = function(event) {
-			resizeHandler();
-		}
+		// window.onresize = function(event) {
+			// console.log(event);
+			// resizeHandler();
+		// }
+		
 
-		isLandscape();
+		checkLandscape();
 	}
 
 
@@ -297,7 +310,7 @@
 		}
 
 		let video = document.getElementById('video');
-		let tapText = document.getElementById('play-message');
+		let tapText = document.getElementById('play-message');	
 		if (!markerRoot1.visible)
 		{
 			video.pause();

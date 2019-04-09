@@ -71,9 +71,9 @@ ARjs.Source.prototype.init = function(onReady, onError){
         this.domElement.style.left = '0px'
 		this.domElement.style.zIndex = '-2'
 		//shuhr. добавляем отключение в портретном режиме.
-		if (window.innerWidth < window.innerHeight) {
-			this.domElement.style.display = "none";
-		}
+		// if (window.innerWidth < window.innerHeight) {
+		// 	this.domElement.style.display = "none";
+		// }
 
 	return this
         function onSourceReady(){
