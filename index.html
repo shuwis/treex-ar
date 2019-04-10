@@ -116,7 +116,7 @@
 			document.getElementsByTagName("canvas")[0].style.display = 'block';
 			isLandscape = true;
 		} else {
-			errMess.style.display = 'block';;
+			errMess.style.display = 'block';
 			// videoTag[videoTagIndex].setAttribute("style", "display:none;");
 			document.getElementsByTagName("canvas")[0].style.display = 'none';
 			isLandscape = false;
@@ -309,19 +309,19 @@
 			arToolkitContext.update( arToolkitSource.domElement );
 		}
 
-		let video = document.getElementById('video');
-		let tapText = document.getElementById('play-message');	
-		if (!markerRoot1.visible)
-		{
-			video.pause();
-			tapText.style.display = 'none';
-		} else {
-			if (video.paused){
-				tapText.style.display = 'block';
-				// let tapObj3d = scene.getObjectById(11);
-				// tapObj3d.visible = true;
-			}
-		}
+		// let video = document.getElementById('video');
+		// let tapText = document.getElementById('play-message');	
+		// if (!markerRoot1.visible)
+		// {
+		// 	video.pause();
+		// 	tapText.style.display = 'none';
+		// } else {
+		// 	if (video.paused){
+		// 		tapText.style.display = 'block';
+		// 		// let tapObj3d = scene.getObjectById(11);
+		// 		// tapObj3d.visible = true;
+		// 	}
+		// }
 	}
 
 
