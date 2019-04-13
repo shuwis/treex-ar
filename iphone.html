@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<title>Приглашение на свадьбу Артема и Нигоры</title>
+	<!-- include three.js library -->
+	<script src='js/three.js'></script>
+	<!-- include jsartookit -->
+	<script src="js/artoolkit.min.js"></script>
+	<script src="js/artoolkit.api.js"></script>
+	<!-- include threex.artoolkit -->
+	<script src="js/threex-artoolkitsource.js"></script>
+	<script src="js/threex-artoolkitcontext.js"></script>
+	<script src="js/threex-arbasecontrols.js"></script>
+	<script src="js/threex-armarkercontrols.js"></script>
+	<style type="text/css">
+		#warning-message { 
+			text-align: center;
+			/* line-height: 50; */
+			vertical-align: middle;
+		}
+		#warning-message p{
+			font-size: large;
+			margin-top: 50%;
+			background-color: white;
+		}
+		#play-message { 
+			text-align: center;
+			/* vertical-align: middle; */
+		}
+		#play-message p{
+			font-size: xx-large;
+			color: greenyellow;
+			/* margin-top: 50%; */
+		}
+	</style>
+</head>
+
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+
+<!-- <video id="video" autoplay loop crossOrigin="anonymous" webkit-playsinline style="display:none"> -->
+<video id="video" loop crossOrigin="anonymous" webkit-playsinline style="display:none">
+	<!-- <source src="video/sintel.ogv" type='video/ogg; codecs="theora, vorbis"'> -->
+	<source src="video/sintel.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+</video>
+<!-- <img id="tapImg" src="data/tap.png" style="display:none"> -->
+
+<!-- <div id="warning-message" style="display:none;">
+	<p>Для полноценного эффекта включите автоповорот экрана и поверните телефон в альбомный режим.<br>
+	Ваши Артем и Нигора</p>
+</div> -->
+
+<!-- <div id="play-message" style="display:none;">
+	<p>Нажми на экран, произойдет волшебство ;)</p>
+</div> -->
+
+<script>
+
+	var scene, camera, renderer, clock, deltaTime, totalTime;
+	var arToolkitSource, arToolkitContext;
+	var markerRoot1;
+	var mesh1;
+	let isLandscape;
+
+	initialize();
+	animate();
+
+	/*
+	function resizeHandler ()
+	{
+		// let videoTag = document.getElementsByTagName("video");
+		// let videoTagIndex = videoTag.length - 1;
+		// let videoTagStyle = videoTag[videoTagIndex].getAttribute("style");
+		let canvas = document.getElementsByTagName("canvas");
+
+		let vidObj3d = scene.getObjectById(10);
+		// let tapObj3d = scene.getObjectById(11);
+		// let tapText = document.getElementById('play-message');
+
+		let errMess = document.getElementById("warning-message");
+		errMess.style.width = window.innerWidth + 'px';
+		errMess.style.height = window.innerHeight + 'px';
+
+		if (window.innerWidth > window.innerHeight) {
+			errMess.style.display = "none";
+
+			// vidObj3d.visible = true;
+			// tapObj3d.visible = true;
+			// tapText.style.display = 'block';
+			// videoTag[videoTagIndex].style.display = 'block';
+
+			canvas[0].style.display = 'block';
+			// document.getElementById( 'video' ).play();
+			isLandscape = true;
+		} else {
+			errMess.style.display = "block";
+
+			// vidObj3d.visible = false;
+			// videoTag[videoTagIndex].style.display = 'none';
+			// tapText.style.display = 'none';
+			
+			canvas[0].style.display = 'none';
+			document.getElementById( 'video' ).pause();
+			isLandscape = false;
+		}
+	}
+	function checkLandscape() {
+		// let videoTag = document.getElementsByTagName("video");
+		// let videoTagIndex = videoTag.length - 1;
+
+		let errMess = document.getElementById("warning-message");
+		errMess.style.width = window.innerWidth + 'px';
+		errMess.style.height = window.innerHeight + 'px';
+
+		if (window.innerWidth > window.innerHeight) {
+			errMess.style.display = 'none';
+			// videoTag[videoTagIndex].setAttribute("style", "display:block;");
+			document.getElementsByTagName("canvas")[0].style.display = 'block';
+			isLandscape = true;
+		} else {
+			errMess.style.display = 'block';;
+			// videoTag[videoTagIndex].setAttribute("style", "display:none;");
+			document.getElementsByTagName("canvas")[0].style.display = 'none';
+			isLandscape = false;
+		}
+	}
+	*/
+
+	// document.body.addEventListener('click', function(){
+	// 	let video = document.getElementById('video');
+	// 	// let tapImg = document.getElementById('tapImg');
+	// 	let obj3d = THREE.getObjectById(2);
+	// 	console.log(obj3d);
+	// 	if(video.paused)
+	// 	{
+	// 		// tapImg.style.display = 'none';
+	// 		video.play();
+	// 	} else {
+	// 		// tapImg.style.display = 'block';
+	// 		video.pause();
+	// 	}
+	// })
+	// window.onchange = function(event) {
+	// 	resizeHandler();
+	// }
+
+	function initialize()
+	{
+		scene = new THREE.Scene();
+
+		let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
+		scene.add( ambientLight );
+					
+		camera = new THREE.Camera();
+		scene.add(camera);
+
+		renderer = new THREE.WebGLRenderer({
+			antialias : true,
+			alpha: true
+		});
+		renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.domElement.style.position = 'absolute'
+		renderer.domElement.style.top = '0px'
+		renderer.domElement.style.left = '0px'
+		document.body.appendChild( renderer.domElement );
+
+		clock = new THREE.Clock();
+		deltaTime = 0;
+		totalTime = 0;
+		
+		////////////////////////////////////////////////////////////
+		// setup arToolkitSource
+		////////////////////////////////////////////////////////////
+
+		arToolkitSource = new THREEx.ArToolkitSource({
+			sourceType : 'webcam',
+		});
+
+		function onResize()
+		{
+			// arToolkitSource.onResize()
+			arToolkitSource.onResizeElement();
+			// arToolkitSource.copySizeTo(renderer.domElement)	
+			arToolkitSource.copyElementSizeTo(renderer.domElement)	
+			if ( arToolkitContext.arController !== null )
+			{
+				// arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+				arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)	
+			}	
+		}
+
+		arToolkitSource.init(function onReady(){
+			onResize()
+		});
+		
+		// handle resize event
+		window.addEventListener('resize', function(){
+			onResize();
+			// resizeHandler();
+		});
+		
+		////////////////////////////////////////////////////////////
+		// setup arToolkitContext
+		////////////////////////////////////////////////////////////	
+
+		// create atToolkitContext
+		arToolkitContext = new THREEx.ArToolkitContext({
+			cameraParametersUrl: 'data/camera_para.dat',
+			detectionMode: 'mono',
+			patternRatio: 0.9
+		});
+		
+		// copy projection matrix to camera when initialization complete
+		arToolkitContext.init( function onCompleted(){
+			camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+		});
+
+		////////////////////////////////////////////////////////////
+		// setup markerRoots
+		////////////////////////////////////////////////////////////
+
+		// build markerControls
+		markerRoot1 = new THREE.Group();
+		scene.add(markerRoot1);
+		let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+			type: 'pattern', patternUrl: "data/hiro.patt",
+			// type: 'pattern', patternUrl: 'data/pattern-marker2.patt',
+		})
+
+
+
+
+		let geometry1 = new THREE.PlaneBufferGeometry(1,1, 4,4);
+
+		let video = document.getElementById( 'video' );
+		//setAttribute autoplay
+		// video.setAttribute( 'autoplay', '');
+		// video.load();
+		// video.play();
+		
+		let texture = new THREE.VideoTexture( video );
+		texture.minFilter = THREE.LinearFilter;
+		texture.magFilter = THREE.LinearFilter;
+		texture.format = THREE.RGBFormat;
+		let material1 = new THREE.MeshBasicMaterial( { map: texture } );
+		
+		mesh1 = new THREE.Mesh( geometry1, material1 );
+		mesh1.rotation.x = -Math.PI/2;
+		
+		markerRoot1.add( mesh1 );
+
+
+		// let geometry2 = new THREE.PlaneBufferGeometry(1,1, 4,4);
+		// let tapImg = document.getElementById( 'tapImg' );
+		// let loader = new THREE.TextureLoader();
+		// let texture2 = loader.load( tapImg.src );
+		// // texture2.anisotropy = 0;
+		// texture2.magFilter = THREE.LinearFilter;
+		// texture2.minFilter = THREE.LinearFilter;
+		// let material2 = new THREE.MeshBasicMaterial( { map: texture2, transparent: true, side: THREE.DoubleSide, depthWrite: false} );
+		
+		// mesh2 = new THREE.Mesh( geometry2, material2 );
+		// mesh2.rotation.x = -Math.PI/2;
+		// mesh2.position.set(0,0.1,0);
+
+		// markerRoot1.add( mesh2 );
+
+		/*
+		document.body.addEventListener('click', function(){
+			let video = document.getElementById('video');
+			// let tapObj3d = scene.getObjectById(11);
+			let tapText = document.getElementById('play-message');
+			let vidObj3d = scene.getObjectById(10);
+
+			if(vidObj3d.visible && markerRoot1.visible && isLandscape){
+				if(video.paused)
+				{
+					// tapObj3d.traverse ( function (child) {
+					// 	if (child instanceof THREE.Mesh) {
+					// 		child.visible = false;
+					// 	}
+					// });
+					tapText.style.display = 'none';
+					video.play();
+				} else {
+					// tapObj3d.traverse ( function (child) {
+					// 	if (child instanceof THREE.Mesh) {
+					// 		child.visible = true;
+					// 	}
+					// });
+					tapText.style.display = 'block';
+					video.pause();
+				}
+			}
+		})
+		*/
+
+		// window.onresize = function(event) {
+			// console.log(event);
+			// resizeHandler();
+		// }
+		
+
+		// checkLandscape();
+	}
+
+
+	function update()
+	{
+		// update artoolkit on every frame
+		if ( arToolkitSource.ready !== false )
+		{
+			arToolkitContext.update( arToolkitSource.domElement );
+		}
+
+		/*
+		let video = document.getElementById('video');
+		let tapText = document.getElementById('play-message');	
+		if (!markerRoot1.visible)
+		{
+			video.pause();
+			tapText.style.display = 'none';
+		} else {
+			if (video.paused){
+				tapText.style.display = 'block';
+				// let tapObj3d = scene.getObjectById(11);
+				// tapObj3d.visible = true;
+			}
+		}
+		*/
+	}
+
+
+	function render()
+	{
+		renderer.render( scene, camera );
+	}
+
+
+	function animate()
+	{
+		requestAnimationFrame(animate);
+		deltaTime = clock.getDelta();
+		totalTime += deltaTime;
+		update();
+		render();
+	}
+
+
+</script>
+
+</body>
+</html>
