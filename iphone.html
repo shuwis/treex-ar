@@ -133,6 +133,34 @@ function initialize()
 	mesh1.rotation.x = -Math.PI/2;
 	
 	markerRoot1.add( mesh1 );
+
+	document.body.addEventListener('click', function(){
+		let video = document.getElementById('video');
+		// let tapObj3d = scene.getObjectById(11);
+		let tapText = document.getElementById('play-message');
+		let vidObj3d = scene.getObjectById(10);
+
+		if(vidObj3d.visible && markerRoot1.visible && isLandscape){
+			if(video.paused)
+			{
+				// tapObj3d.traverse ( function (child) {
+				// 	if (child instanceof THREE.Mesh) {
+				// 		child.visible = false;
+				// 	}
+				// });
+				tapText.style.display = 'none';
+				video.play();
+			} else {
+				// tapObj3d.traverse ( function (child) {
+				// 	if (child instanceof THREE.Mesh) {
+				// 		child.visible = true;
+				// 	}
+				// });
+				tapText.style.display = 'block';
+				video.pause();
+			}
+		}
+	})
 }
 
 
