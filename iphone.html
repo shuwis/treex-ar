@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Hello, world!</title>
+	<title>rerererer</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<!-- include jsartookit -->
@@ -70,10 +70,10 @@ function initialize()
 
 	function onResize()
 	{
-		arToolkitSource.onResize()
-		// arToolkitSource.onResizeElement();
-		arToolkitSource.copySizeTo(renderer.domElement)	
-		// arToolkitSource.copyElementSizeTo(renderer.domElement)	
+		// arToolkitSource.onResize()
+		arToolkitSource.onResizeElement();
+		// arToolkitSource.copySizeTo(renderer.domElement)	
+		arToolkitSource.copyElementSizeTo(renderer.domElement)	
 		if ( arToolkitContext.arController !== null )
 		{
 			//arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
