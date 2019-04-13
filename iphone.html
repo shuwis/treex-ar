@@ -139,7 +139,7 @@ function initialize()
 	document.body.addEventListener('click', function(){
 		let video = document.getElementById('video');
 		// let tapObj3d = scene.getObjectById(11);
-		let tapText = document.getElementById('play-message');
+		// let tapText = document.getElementById('play-message');
 		let vidObj3d = scene.getObjectById(10);
 
 		if(vidObj3d.visible && markerRoot1.visible && isLandscape){
@@ -150,7 +150,7 @@ function initialize()
 				// 		child.visible = false;
 				// 	}
 				// });
-				tapText.style.display = 'none';
+				// tapText.style.display = 'none';
 				video.play();
 			} else {
 				// tapObj3d.traverse ( function (child) {
@@ -158,7 +158,7 @@ function initialize()
 				// 		child.visible = true;
 				// 	}
 				// });
-				tapText.style.display = 'block';
+				// tapText.style.display = 'block';
 				video.pause();
 			}
 		}
